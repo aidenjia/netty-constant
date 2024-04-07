@@ -12,6 +12,7 @@
     <modules>
         <module>hello-world</module>
         <module>netty-http</module>
+      <module>netty-im</module>
     </modules>
 
     <properties>
