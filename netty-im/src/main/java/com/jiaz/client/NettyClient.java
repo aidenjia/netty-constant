@@ -1,5 +1,11 @@
 package com.jiaz.client;
 
+import com.jiaz.client.handler.LoginResponseHandler;
+import com.jiaz.client.handler.MessageResponseHandler;
+import com.jiaz.codec.PacketDecoder;
+import com.jiaz.codec.PacketEncoder;
+import com.jiaz.request.MessageRequestPacket;
+import com.jiaz.server.handler.Spliter;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -9,6 +15,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class NettyClient {
@@ -28,7 +35,11 @@ public class NettyClient {
         .handler(new ChannelInitializer<SocketChannel>() {
           @Override
           public void initChannel(SocketChannel ch) {
-            ch.pipeline().addLast(new ClientHandler());
+            ch.pipeline().addLast(new Spliter());
+            ch.pipeline().addLast(new PacketDecoder());
+            ch.pipeline().addLast(new LoginResponseHandler());
+            ch.pipeline().addLast(new MessageResponseHandler());
+            ch.pipeline().addLast(new PacketEncoder());
           }
         });
     connect(bootstrap, HOST, PORT, MAX_RETRY);
@@ -39,6 +50,7 @@ public class NettyClient {
       if (future.isSuccess()) {
         System.out.println(new Date() + ": 连接成功");
         Channel channel = ((ChannelFuture) future).channel();
+        startConsoleThread(channel);
       } else if (retry == 0) {
         System.err.println("重试次数已用完，放弃连接！");
       } else {
@@ -51,6 +63,17 @@ public class NettyClient {
             .SECONDS);
       }
     });
+  }
+
+  private static void startConsoleThread(Channel channel) {
+    new Thread(() -> {
+      while (!Thread.interrupted()) {
+        System.out.println("输入消息发送至服务端: ");
+        Scanner sc = new Scanner(System.in);
+        String line = sc.nextLine();
+        channel.writeAndFlush(new MessageRequestPacket(line));
+      }
+    }).start();
   }
 
 
