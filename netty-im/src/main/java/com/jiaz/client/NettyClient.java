@@ -5,7 +5,7 @@ import com.jiaz.client.handler.MessageResponseHandler;
 import com.jiaz.codec.PacketDecoder;
 import com.jiaz.codec.PacketEncoder;
 import com.jiaz.request.MessageRequestPacket;
-import com.jiaz.server.handler.Spliter;
+import com.jiaz.codec.Spliter;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

@@ -1,4 +1,4 @@
-package com.jiaz.server.handler;
+package com.jiaz.codec;
 
 import com.jiaz.protocol.PacketCodeC;
 import io.netty.buffer.ByteBuf;

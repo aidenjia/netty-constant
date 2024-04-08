@@ -2,10 +2,10 @@ package com.jiaz.client.handler;
 
 import com.jiaz.protocol.LoginRequestPacket;
 import com.jiaz.response.LoginResponsePacket;
-import com.jiaz.util.LoginUtil;
+import com.jiaz.session.Session;
+import com.jiaz.util.SessionUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.util.Date;
 import java.util.UUID;
 
 
@@ -25,11 +25,13 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket loginResponsePacket) {
+        String userId = loginResponsePacket.getUserId();
+        String userName = loginResponsePacket.getUserName();
         if (loginResponsePacket.isSuccess()) {
-            System.out.println(new Date() + ": 客户端登录成功");
-            LoginUtil.markAsLogin(ctx.channel());
+            System.out.println("[" + userName + "]登录成功，userId 为: " + loginResponsePacket.getUserId());
+            SessionUtil.bindSession(new Session(userId, userName), ctx.channel());
         } else {
-            System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
+            System.out.println("[" + userName + "]登录失败，原因：" + loginResponsePacket.getReason());
         }
     }
 
