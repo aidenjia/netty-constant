@@ -1,24 +1,26 @@
 package com.jiaz.serialize;
 
+
 import com.jiaz.serialize.impl.JSONSerializer;
 
 public interface Serializer {
 
-  Serializer DEFAULT = new JSONSerializer();
-  /**
-   * 序列化算法
-   * @return
-   */
-  byte getSerializerAlgorithm();
+    Serializer DEFAULT = new JSONSerializer();
 
-  /**
-   * java 对象转换成二进制
-   */
-  byte[] serialize(Object object);
+    /**
+     * 序列化算法
+     * @return
+     */
+    byte getSerializerAlgorithm();
 
-  /**
-   * 二进制转换成 java 对象
-   */
-  <T> T deserialize(Class<T> clazz, byte[] bytes);
+    /**
+     * java 对象转换成二进制
+     */
+    byte[] serialize(Object object);
+
+    /**
+     * 二进制转换成 java 对象
+     */
+    <T> T deserialize(Class<T> clazz, byte[] bytes);
 
 }

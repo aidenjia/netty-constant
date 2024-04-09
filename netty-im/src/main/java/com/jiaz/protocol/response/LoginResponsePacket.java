@@ -1,6 +1,7 @@
-package com.jiaz.response;
+package com.jiaz.protocol.response;
 
-import static com.jiaz.command.Command.LOGIN_RESPONSE;
+
+import static com.jiaz.protocol.command.Command.LOGIN_RESPONSE;
 
 import com.jiaz.protocol.Packet;
 import lombok.Data;

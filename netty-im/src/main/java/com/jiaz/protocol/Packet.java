@@ -1,10 +1,11 @@
 package com.jiaz.protocol;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public abstract class Packet {
+public abstract class Packet implements Serializable {
     /**
      * 协议版本
      */

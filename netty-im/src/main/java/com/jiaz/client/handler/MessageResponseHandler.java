@@ -1,9 +1,8 @@
 package com.jiaz.client.handler;
 
-import com.jiaz.response.MessageResponsePacket;
+import com.jiaz.protocol.response.MessageResponsePacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.util.Date;
 
 public class MessageResponseHandler extends SimpleChannelInboundHandler<MessageResponsePacket> {
     @Override
@@ -11,6 +10,6 @@ public class MessageResponseHandler extends SimpleChannelInboundHandler<MessageR
         String fromUserId = messageResponsePacket.getFromUserId();
         String fromUserName = messageResponsePacket.getFromUserName();
         System.out.println(fromUserId + ":" + fromUserName + " -> " + messageResponsePacket
-            .getMessage());
+                .getMessage());
     }
 }

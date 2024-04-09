@@ -5,6 +5,7 @@ import com.jiaz.serialize.Serializer;
 import com.jiaz.serialize.SerializerAlgorithm;
 
 public class JSONSerializer implements Serializer {
+
     @Override
     public byte getSerializerAlgorithm() {
         return SerializerAlgorithm.JSON;

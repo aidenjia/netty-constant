@@ -84,40 +84,6 @@
                     <target>11</target>
                 </configuration>
             </plugin>
-            <!-- release -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <!--Skip javadoc-->
-                    <arguments>-Dmaven.javadoc.skip=true</arguments>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                </configuration>
-            </plugin>
-            <!-- enforcer -->
-            <!--进行本地编码jdk版本校验 或者maven-enforcer-plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireJavaVersion>
-                                    <version>11</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- skip the test -->
             <!--参考博客:https://sq.163yun.com/blog/article/173632756223238144-->
             <plugin>

@@ -1,16 +1,15 @@
 package com.jiaz.codec;
 
-import com.jiaz.protocol.PacketCodeC;
+import com.jiaz.protocol.PacketCodec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
 import java.util.List;
 
-public class PacketDecoder extends ByteToMessageDecoder {
+public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
-  @Override
-  protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-    //将ByteBuf通过序列化算法解码成相应的Object,避免了重复的代码的书写
-    out.add(PacketCodeC.INSTANCE.decode(in));
-  }
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List out) {
+        out.add(PacketCodec.INSTANCE.decode(in));
+    }
 }
