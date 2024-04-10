@@ -1,8 +1,14 @@
 package com.jiaz.transport;
 
 import com.jiaz.codec.RpcDecoder;
+import com.jiaz.codec.RpcEncoder;
+import com.jiaz.transport.handler.HeartBeatRequestHandler;
+import com.jiaz.transport.handler.RpcIdleStateHandler;
+import com.jiaz.transport.handler.RpcServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -18,6 +24,8 @@ public class NettyServer {
   private ServerBootstrap serverBootstrap;
   protected int port;
 
+  private Channel channel;
+
 
   public NettyServer(int port) {
     this.port = port;
@@ -26,7 +34,7 @@ public class NettyServer {
     workerGroup = NettyEventLoopFactory.eventLoopGroup(
         Math.min(Runtime.getRuntime().availableProcessors() + 1, 32),
         "NettyServerWorker");
-    serverBootstrap = new ServerBootstrap().group(bossGroup,workerGroup)
+    serverBootstrap = new ServerBootstrap().group(bossGroup, workerGroup)
         .channel(NioServerSocketChannel.class)
         //地址重用: 当 SO_REUSEADDR 被设置为 true 时，表示允许绑定到同一端口的多个 Socket 连接。通常情况下，如果一个 Socket 连接处于 TIME_WAIT 状态（等待关闭的连接），
         // 那么在同一端口上启动新的 Socket 连接会失败，因为操作系统会认为端口仍然被占用。启用 SO_REUSEADDR 选项可以绕过这个限制，允许多个 Socket 连接绑定到同一端口.
@@ -44,15 +52,36 @@ public class NettyServer {
         //当 SO_KEEPALIVE 被设置为 true 时，表示启用 TCP 连接的保活机制。TCP 保活机制是一种机制，
         // 用于检测连接是否仍然有效。在连接空闲一段时间后，系统会发送一系列的探测报文给对端，如果对端没有响应，就会认为连接已经断开
         .childOption(ChannelOption.SO_KEEPALIVE, true)
-        .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new ChannelInitializer<SocketChannel>() {
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new ChannelInitializer<SocketChannel>() {
           @Override
-          protected void initChannel(SocketChannel ch)  {
+          protected void initChannel(SocketChannel ch) {
+            ch.pipeline().addLast(new RpcIdleStateHandler());
             ch.pipeline().addLast("rpc-decoder", new RpcDecoder());
-           // ch.pipeline().addLast("rpc-encoder", new DemoRpcEncoder());
-           // ch.pipeline().addLast("server-handler", new DemoRpcServerHandler());
+           // ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
+            ch.pipeline().addLast("rpc-encoder", new RpcEncoder());
+            ch.pipeline().addLast("server-handler", new RpcServerHandler());
           }
         });
 
+    try {
+      Channel ch = serverBootstrap.bind(port).sync().channel();
+      ch.closeFuture().sync();
+    } catch (InterruptedException e) {
+      bossGroup.shutdownGracefully();
+      workerGroup.shutdownGracefully();
+    }
+  }
+
+
+  public void shutdown() throws InterruptedException {
+    channel.close().sync();
+    if (bossGroup != null) {
+      bossGroup.shutdownGracefully().awaitUninterruptibly(15000);
+    }
+    if (workerGroup != null) {
+      workerGroup.shutdownGracefully().awaitUninterruptibly(15000);
+    }
   }
 
 }
