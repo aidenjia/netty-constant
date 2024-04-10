@@ -9,7 +9,7 @@ public class Constants {
 
     public static final byte VERSION_1 = 1;
 
-    public static final int DEFAULT_TIMEOUT = 500000;
+    public static final int DEFAULT_TIMEOUT = 5000*5;
 
     public static final int CONNECTION_TIMEOUT = 2000;
 

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RpcIdleStateHandler extends IdleStateHandler {
 
-  private static final int ALL_IDLE_TIME = 30;
+  private static final int ALL_IDLE_TIME = 60 * 2;
 
   public RpcIdleStateHandler() {
     super(0, 0, ALL_IDLE_TIME, TimeUnit.SECONDS);

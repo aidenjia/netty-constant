@@ -11,7 +11,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class RpcClientHandler extends SimpleChannelInboundHandler<Message<Response>> {
 
   @Override
-  protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message<Response> message) throws Exception {
+  protected void channelRead0(ChannelHandlerContext channelHandlerContext,
+      Message<Response> message) throws Exception {
     NettyResponseFuture responseFuture =
         Connection.IN_FLIGHT_REQUEST_MAP.remove(message.getHeader().getMessageId());
     Response response = message.getContent();
