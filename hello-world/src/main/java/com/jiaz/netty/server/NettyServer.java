@@ -1,5 +1,7 @@
-package com.jiaz.netty;
+package com.jiaz.netty.server;
 
+import com.jiaz.netty.server.handler.FirstOutboundServerHandler;
+import com.jiaz.netty.server.handler.FirstServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -26,12 +28,12 @@ public class NettyServer {
          * 模型中ServerSocket以及Socket两个概念对应上
          */
         .channel(NioServerSocketChannel.class)
-        .childAttr(AttributeKey.newInstance("childAttr"),"childAttrValue")
-        .handler(new ServerHandler())
+        .childAttr(AttributeKey.newInstance("childAttr"), "childAttrValue")
         .childHandler(new ChannelInitializer<NioSocketChannel>() {
           @Override
           protected void initChannel(NioSocketChannel ch) {
             ch.pipeline().addLast(new FirstServerHandler());
+            ch.pipeline().addLast(new FirstOutboundServerHandler());
           }
         });
     serverBootstrap.bind(20000).sync();

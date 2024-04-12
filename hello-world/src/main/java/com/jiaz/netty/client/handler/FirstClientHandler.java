@@ -1,4 +1,4 @@
-package com.jiaz.netty;
+package com.jiaz.netty.client.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,8 +25,10 @@ public class FirstClientHandler extends ChannelInboundHandlerAdapter {
         return buffer;
     }
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = (ByteBuf) msg;
-        System.out.println(new Date() + ": 客户端读到数据 -> " + byteBuf.toString(Charset.forName("utf-8")));
+        System.out.println(new Date() + ": 客户端读到数据 -> " + byteBuf.readBytes(5).toString(Charset.forName("utf-8")));
+        //使得消息继续传播到其他的 ChannelInboundHandlerAdapter
+        super.channelRead(ctx, msg);
     }
 }

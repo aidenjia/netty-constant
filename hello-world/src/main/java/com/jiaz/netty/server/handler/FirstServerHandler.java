@@ -1,8 +1,9 @@
-package com.jiaz.netty;
+package com.jiaz.netty.server.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.local.LocalAddress;
 import java.nio.charset.Charset;
 import java.util.Date;
 
